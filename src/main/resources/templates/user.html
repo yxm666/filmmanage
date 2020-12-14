@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>电影后台管理</title>
+    <!-- Bootstrap Core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- MetisMenu CSS -->
+    <link th:href="@{/css/metisMenu.min.css}" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link th:href="@{/css/dataTables.bootstrap.css}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/sb-admin-2.css}" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/boot-crm.css}" rel="stylesheet" type="text/css">
+    <!-- jQuery -->
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script th:src="@{/js/metisMenu.min.js}"></script>
+    <!-- DataTables JavaScript -->
+    <script th:src="@{/js/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+    <!-- Custom Theme JavaScript -->
+    <script th:src="@{/js/sb-admin-2.js}"></script>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+</head>
+<body>
+
+<div id="wrapper">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation"
+         style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">电影后台管理系统</a>
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span th:text="${session.userName}"></span>&nbsp;&nbsp;
+                    <i class="fa fa-user fa-fw"></i>
+                    <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a th:href="'/user/user.do?userId='+${session.userId}">
+                        <i class="fa fa-user fa-fw"></i> 用户设置</a></li>
+                    <li class="divider"></li>
+                    <li><a th:href="@{/}"><i class="fa fa-sign-out fa-fw"></i>退出登录</a></li>
+                </ul> <!-- /.dropdown-user -->
+            </li>
+            <!-- /.dropdown -->
+        </ul>
+        <!-- /.navbar-top-links -->
+
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li>
+                        <a href="/film/film.do">
+                            <i class="glyphicon glyphicon-expand"></i>
+                            影片管理
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/news/news.do">
+                            <i class="fa fa-th-list fa-fw"></i>
+                            新闻管理
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/user/user.do" class="active">
+                            <i class="fa fa-user fa-fw"></i>
+                            用户管理
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">用户管理</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-inline" action="/user/user.do" method="post">
+                    <div class="form-group">
+                        <label for="userName">用户姓名</label>
+                        <input type="text" class="form-control" id="userName"  name="userName">
+                    </div>
+                    <div class="form-group">
+                        <label for="sex">性别</label>
+                        <input type="text" class="form-control" id="sex"  name="sex">
+                    </div>
+                    <div class="form-group">
+                        <label for="tel">电话</label>
+                        <input type="text" class="form-control" id="tel"  name="tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">住址</label>
+                        <input type="text" class="form-control" id="address"  name="address">
+                    </div>
+                    <button type="submit" class="btn btn-primary">查询</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customerEditDialog"
+                            data-whatever="添加" onclick="insert()">添加用户
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">用户信息列表</div>
+                    <!-- /.panel-heading -->
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>工号</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>年龄</th>
+                            <th>电话</th>
+                            <th>住址</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:each="item : ${list}">
+                            <td th:text="${item.userId}"></td>
+                            <td th:text="${item.userName}"></td>
+                            <td th:text="${item.sex}"></td>
+                            <td th:text="${item.age}"></td>
+                            <td th:text="${item.tel}"></td>
+                            <td th:text="${item.address}"></td>
+                            <td>
+                                <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
+                                   data-target="#customerEditDialog" data-whatever="修改"
+                                   th:onclick="'edit('+${item.userId}+')'">编辑</a>
+                                <a href="#" class="btn btn-danger btn-sm" th:onclick="'del('+${item.userId}+')'">删除</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+    </div>
+    <!-- /#page-wrapper -->
+
+</div>
+<!-- 用户编辑对话框 -->
+<div class="modal fade" id="customerEditDialog" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">修改用户信息</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/film/add.do" class="form-horizontal" id="edit_user_form">
+                    <!-- 用户id -->
+                    <input type="hidden" id="user_Id" name="userId"/>
+                    <div class="form-group">
+                        <label for="user_Name" class="col-sm-2 control-label">姓名</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="user_Name" placeholder="用户姓名" name="userName">
+                        </div>
+                    </div>
+                    <div class="form-group" id="pwd">
+                        <label for="user_password" class="col-sm-2 control-label">密码</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="user_password" name="password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_sex" class="col-sm-2 control-label">性别</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="user_sex" placeholder="用户性别" name="sex">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_age" class="col-sm-2 control-label">年龄</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="user_age" placeholder="年龄"
+                                   name="age">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_tel" class="col-sm-2 control-label">电话</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="user_tel" placeholder="联系电话" name="tel">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_address" class="col-sm-2 control-label">地址</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="user_address" placeholder="家庭住址" name="address">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" id="update" class="btn btn-primary" onclick="update()" style="display: none;">
+                            保存修改
+                        </button>
+                        <button type="submit" id="insert" class="btn btn-primary" onclick="add()">确认添加</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- /#wrapper -->
+
+
+<script type="text/javascript" th:inline="javascript">
+
+    //根据触发的按钮不同，更改模态框的顶部标题
+    //先获取到模态框，传参是event事件,'show.bs.modal'在调用 show 方法后触发。
+    $('#customerEditDialog').on('show.bs.modal', function (event) {
+        //获取触发事件的组件
+        var button = $(event.relatedTarget);
+        //获取组件上的‘data-whatever’里的数据
+        var recipient = button.data('whatever');
+        //获取到模态框的model
+        var modal = $(this);
+        //找到模态框的标题并修改
+        modal.find('.modal-title').text(recipient + '用户信息');
+        //将模态框的input标签里的值全部设置为空（添加用户时用，清空输入框）
+        //因为在点击事件上是先执行这个，所以组件上的onclick事件是在此之后执行的，编辑信息时不会影响将数据再次写入input输入框
+        modal.find('.modal-body input').val('');
+
+    })
+
+    //点击添加
+    function insert() {
+        $('#insert').show();
+        $('#update').hide();
+    }
+
+    //点击编辑按钮
+    function edit(id) {
+
+        //在js中用Thymeleaf取值，格式如下：必须在写成 <script type="text/javascript" th:inline="javascript">
+        //   / * [[${session.userId}]]*/'Sebastian'
+        //   /*…*/中的内容在用浏览器打开静态 网页时，会被忽略.
+        //   'Sebastian'会在浏览器中显示。静态时。
+        //  Thymeleaf解析时，会解析/*[[${session.userId}]]*/的内容，并把获得的值替换掉后面的内容。
+        // 详见：https://blog.csdn.net/qq_27828109/article/details/77933870
+        var userId = /*[[${session.userId}]]*/'Sebastian';
+        $('#insert').hide();
+        // 判断当前用户是否是对自己的信息进行操作，如果是，能修改密码，如果不是则不能
+        if (id != userId){
+            $('#pwd').hide();
+        }
+        $('#update').show();
+
+        $.ajax({
+            type: "get",
+            url: "/user/findById.do",
+            data: {"id": id},
+            success: function (data) {
+                $("#user_Id").val(data.userId);
+                $("#user_Name").val(data.userName);
+                $("#user_password").val(data.password);
+                $("#user_sex").val(data.sex);
+                $("#user_age").val(data.age) ;
+                $("#user_tel").val(data.tel);
+                $("#user_address").val(data.address);
+            }
+        });
+    }
+
+    //点击确认修改
+    function update() {
+        $.post("/user/update.do", $("#edit_user_form").serialize(), function (data) {
+            alert("用户信息更新成功！");
+            window.location.reload();
+        });
+    }
+
+    //点击确认添加
+    function add() {
+        $.post("/user/add.do", $("#edit_user_form").serialize(), function (data) {
+            alert("用户信息添加成功！");
+            window.location.reload();
+        });
+    }
+
+    //点击删除按钮
+    function del(id) {
+        if (confirm('确实要删除该用户吗?')) {
+            $.post("/user/delete.do", {"id": id}, function (data) {
+                alert("用户删除成功！");
+                window.location.reload();
+            });
+        }
+    }
+</script>
+
+
+</body>
+</html>

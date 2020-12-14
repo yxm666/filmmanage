@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新闻浏览</title>
+    <style type="text/css">
+        body{
+            background: url(/img/bg.png)  no-repeat;
+            background-size: 100%;
+        }
+        .bg{
+            width: 80%;
+            min-height: 780px;
+            background: #dbe7f1;
+            opacity: 0.6;
+            margin: 5% auto;
+        }
+        .news{
+            width: 80%;
+            padding-top: 70px;
+            margin:0 auto;
+        }
+        .content{
+            padding-top: 20px;
+            margin-left: 50px;
+            min-height: 500px;
+        }
+        p{
+            margin-left: 70%;
+        }
+        .return{
+            float: left;
+            margin-top: -50px;
+            width: 120px;
+            height: 45px;
+            margin-left: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 返回-->
+    <div class="return">
+        <!-- 如果未登录，则返回页面是新闻列表页 -->
+        <a id="no" th:if="${session.userId == null}" th:href="@{/news/newsList.do}" style="color: white;">&lt;&lt;返回</a>
+        <!-- 如果登录，则返回页面后台新闻管理页面 -->
+        <a id="yes" th:if="${session.userId != null}" th:href="@{/news/news.do}" style="color: white;">&lt;&lt;返回</a>
+    </div>
+    <!-- 新闻 -->
+    <div class="bg">
+        <div class="news">
+            <h3 th:text="${news.title}"></h3>
+            <div class="content" th:text="${news.content}"></div>
+            <p>发布者:[[${news.author}]]</p>
+            <p>发布时间:[[${news.creatDate}]]</p>
+        </div>
+    </div>
+</body>
+</html>

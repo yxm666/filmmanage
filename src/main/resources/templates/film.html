@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>电影后台管理</title>
+    <!-- Bootstrap Core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- MetisMenu CSS -->
+    <link th:href="@{/css/metisMenu.min.css}" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link th:href="@{/css/dataTables.bootstrap.css}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/sb-admin-2.css}" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/css/boot-crm.css}" rel="stylesheet" type="text/css">
+    <!-- jQuery -->
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script th:src="@{/js/metisMenu.min.js}"></script>
+    <!-- DataTables JavaScript -->
+    <script th:src="@{/js/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+    <!-- Custom Theme JavaScript -->
+    <script th:src="@{/js/sb-admin-2.js}"></script>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <style type="text/css">
+        td {text-align:center}
+    </style>
+</head>
+<body>
+
+<div id="wrapper">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation"
+         style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">电影后台管理系统</a>
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <span th:text="${session.userName}"></span>&nbsp;&nbsp;
+                    <i class="fa fa-user fa-fw"></i>
+                    <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a th:href="'/user/user.do?userId='+${session.userId}">
+                        <i class="fa fa-user fa-fw"></i> 用户设置</a></li>
+                    <li class="divider"></li>
+                    <li><a th:href="@{/}"><i class="fa fa-sign-out fa-fw"></i>退出登录</a></li>
+                </ul> <!-- /.dropdown-user -->
+            </li>
+            <!-- /.dropdown -->
+        </ul>
+        <!-- /.navbar-top-links -->
+
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li>
+                        <a href="/film/film.do" class="active">
+                            <i class="glyphicon glyphicon-expand"></i>
+                            影片管理
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/news/news.do">
+                            <i class="fa fa-th-list fa-fw"></i>
+                            新闻管理
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/user/user.do">
+                            <i class="fa fa-user fa-fw"></i>
+                            用户管理
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">影片管理</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-inline" action="/film/film.do" method="post">
+                    <div class="form-group">
+                        <label for="filmName">影片名称</label>
+                        <input type="text" class="form-control" id="filmName"  name="filmName">
+                    </div>
+                    <div class="form-group">
+                        <label for="classify">影片类型</label>
+                        <input type="text" class="form-control" id="classify"  name="classify">
+                    </div>
+                    <div class="form-group">
+                        <label for="director">导演姓名</label>
+                        <input type="text" class="form-control" id="director"  name="director">
+                    </div>
+                    <div class="form-group">
+                        <label for="showtime">上映时间</label>
+                        <input type="text" class="form-control" id="showtime"  name="showtime">
+                    </div>
+                    <button type="submit" class="btn btn-primary">查询</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customerEditDialog"
+                            data-whatever="添加" onclick="insert()">添加影片
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">影片信息列表</div>
+                    <!-- /.panel-heading -->
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>预览</th>
+                            <th>名称</th>
+                            <th>类型</th>
+                            <th>导演</th>
+                            <th>上映时间</th>
+                            <th>简述</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:each="item : ${list}">
+                            <td th:text="${item.filmId}"></td>
+                            <td><img th:src="${'/resource/'+item.coverImg}" style="width: 85px;height: 100px;"></td>
+                            <td><a th:href="'/film/watchMovie.do?id='+${item.filmId}" th:text="${item.filmName}"></a></td>
+                            <td th:text="${item.classify}"></td>
+                            <td th:text="${item.director}"></td>
+                            <td th:text="${item.showtime}"></td>
+                            <td th:text="${item.sketch}"></td>
+                            <td>
+                                <a href="#" class="btn btn-primary btn-sm" data-toggle="modal"
+                                   data-target="#customerEditDialog" data-whatever="修改"
+                                   th:onclick="'edit('+${item.filmId}+')'">编辑</a>
+                                <a href="#" class="btn btn-danger btn-sm" th:onclick="'del('+${item.filmId}+')'">删除</a>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+    </div>
+    <!-- /#page-wrapper -->
+
+</div>
+<!-- 影片编辑对话框 -->
+<div class="modal fade" id="customerEditDialog" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">修改影片信息</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/film/add.do" method="post" class="form-horizontal" id="edit_film_form" enctype="multipart/form-data">
+                    <!-- 影片id -->
+                    <input type="hidden" id="film_Id" name="filmId"/>
+                    <div class="form-group">
+                        <label for="film_Name" class="col-sm-2 control-label">影片名称</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="film_Name" placeholder="影片名称" name="filmName">
+                        </div>
+                    </div>
+                    <div class="form-group" id="add_coverImg">
+                        <label for="film_coverImg" class="col-sm-2 control-label">影片封面</label>
+                        <div class="col-sm-10" align="center">
+                            <input type="file" class="form-control" id="film_coverImg" name="file">
+                            <img id="CoverImg" src="/img/bg.png" style="width: 85px;height: 100px">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="film_classify" class="col-sm-2 control-label">影片类型</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="film_classify" placeholder="影片类型" name="classify">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="film_director" class="col-sm-2 control-label">导演</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="film_director" placeholder="导演" name="director">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="film_movie" class="col-sm-2 control-label">上传影片</label>
+                        <div class="col-sm-10">
+                            <input id="movie" type="text" class="form-control" name="movie" disabled>
+                            <input type="file" class="form-control" id="film_movie" name="file">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="film_showtime" class="col-sm-2 control-label">上映时间</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="film_showtime" placeholder="影片上映时间" name="showtime">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="film_sketch" class="col-sm-2 control-label">简述</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="film_sketch" placeholder="简述" name="sketch">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="submit" id="update" class="btn btn-primary" style="display: none;" onclick="update()">
+                            保存修改
+                        </button>
+                        <button type="submit" id="insert" class="btn btn-primary">确认添加</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- /#wrapper -->
+
+
+<script type="text/javascript">
+
+    //根据触发的按钮不同，更改模态框的顶部标题
+    //先获取到模态框，传参是event事件,'show.bs.modal'在调用 show 方法后触发。
+    $('#customerEditDialog').on('show.bs.modal', function (event) {
+        //获取触发事件的组件
+        var button = $(event.relatedTarget);
+        //获取组件上的‘data-whatever’里的数据
+        var recipient = button.data('whatever');
+        //获取到模态框的model
+        var modal = $(this);
+        //找到模态框的标题并修改
+        modal.find('.modal-title').text(recipient + '影片信息');
+        //将模态框的input标签里的值全部设置为空（添加用户时用，清空输入框）
+        //因为在点击事件上是先执行这个，所以组件上的onclick事件是在此之后执行的，编辑信息时不会影响将数据再次写入input输入框
+        modal.find('.modal-body input').val('');
+
+    })
+
+    //点击添加
+    function insert() {
+        $('#insert').show();
+        $('#update').hide();
+
+        $('#CoverImg').hide();
+        $('#movie').hide();
+    }
+
+    //点击编辑按钮
+    function edit(id) {
+
+        $('#insert').hide();
+        $('#update').show();
+
+        $('#film_coverImg').hide();
+        $('#film_movie').hide();
+
+        $.ajax({
+            type: "get",
+            url: "/film/findById.do",
+            data: {"id": id},
+            success: function (data) {
+                $("#film_Id").val(data.filmId);
+                $("#film_Name").val(data.filmName);
+                $("#film_classify").val(data.classify);
+                $("#film_director").val(data.director);
+                $("#movie").val(data.movie);
+                $("#film_showtime").val(data.showtime);
+                $("#film_sketch").val(data.sketch);
+                $("#CoverImg").attr("src","/resource/"+data.coverImg);
+                // $("#CoverImg").src("/resource/"+data.coverImg);
+                // $("#coverImg").src("/resource/"+data.coverImg);
+
+            }
+        });
+    }
+
+    //点击确认修改
+    function update() {
+        $.post("/film/update.do", $("#edit_film_form").serialize(), function (data) {
+            alert("影片信息更新成功！");
+            window.location.reload();
+        });
+    }
+
+    //点击确认添加
+    function add() {
+        $.post("/film/add.do", $("#edit_film_form").serialize(), function (data) {
+            alert("影片信息添加成功！");
+            window.location.reload();
+        });
+    }
+
+    //点击删除按钮
+    function del(id) {
+        if (confirm('确实要删除该影片吗?')) {
+            $.post("/film/delete.do", {"id": id}, function (data) {
+                alert("影片删除成功！");
+                window.location.reload();
+            });
+        }
+    }
+</script>
+
+
+</body>
+</html>

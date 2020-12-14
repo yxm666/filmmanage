@@ -1,0 +1,51 @@
+### 服务器配置
+server:
+    port: 8080
+### 项目配置
+project:
+    captcha-open: false                #是否开启登录验证码
+    shiro:
+        remember-me-timeout: 7         #cookie记住登录信息时间，默认7天（天）
+        global-session-timeout: 1800   #Session会话超时时间，默认30分钟（秒）
+### spring配置
+spring:
+    ### 数据库配置
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/filmmanage?characterEncoding=utf-8
+        username: root
+        password: root
+
+    ### jpa配置
+    jpa:
+#        database: fby.filmmanage.mysql
+        ### 是否打印sql
+        show-sql: true
+        ### 是否生成ddl
+        generate-ddl: true
+        hibernate:
+            ### 每次编译项目对数据库表的操作方式：更新
+            ddl-auto: update
+        properties:
+            ### 数据库方言,告诉hibernate这是mysql
+            hibernate.dialect: yxm.filmmanage.mysql.MySQLDialectUTF8
+            ### 控制条打印sql格式化输出
+            hibernate.format_sql: true
+        open-in-view: true
+    ## thymeleaf模板设置
+    thymeleaf:
+        # 是否为Web框架启用Thymeleaf视图解析
+        enabled: true
+        prefix: classpath:/templates/
+        suffix: .html
+        mode: HTML
+        encoding: utf-8
+        servlet.content-type: text/html
+        cache: false
+
+    servlet:
+        ### 文件上传
+        multipart:
+            max-file-size: 1000MB       # 单个文件的最大值
+            max-request-size: 1010MB     # 上传文件总的最大值
+

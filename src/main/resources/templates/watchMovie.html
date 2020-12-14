@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>影片观看</title>
+    <!-- jQuery -->
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <style type="text/css">
+        body{
+            background: url(/img/bg.png)  no-repeat;
+            background-size: 100%;
+        }
+        .bg{
+            width: 80%;
+            min-height: 720px;
+            margin: 5% auto;
+        }
+        .return{
+            float: left;
+            margin-top: -50px;
+            width: 120px;
+            height: 45px;
+            margin-left: 30px;
+        }
+        .film{
+            width: 90%;
+            padding-top: 0px;
+            margin:0 auto;
+            /*border: 1px solid red;*/
+        }
+    </style>
+
+</head>
+<body>
+    <!-- 返回-->
+    <div class="return">
+        <!-- 返回页面后台新闻管理页面 -->
+        <a th:href="@{/film/film.do}" style="color: white;">&lt;&lt;返回</a>
+    </div>
+    <!-- 新闻 -->
+    <div class="bg">
+        <div class="film">
+            <h3 style="color: white;"><span>正在播放:[[${film.filmName}]]</span>&nbsp;&nbsp;&nbsp;<span>导演:[[${film.director}]]</span>&nbsp;&nbsp;&nbsp;<span>类型:[[${film.classify}]]</span></h3>
+            <video th:src="'/resource/'+${film.movie}" controls="controls" autoplay height="665px"></video>
+        </div>
+    </div>
+</body>
+</html>

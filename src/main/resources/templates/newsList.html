@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新闻浏览</title>
+    <style type="text/css">
+        body{
+            background: url(/img/bg.png)  no-repeat;
+            background-size: 100%;
+        }
+        .news{
+            width: 80%;
+            min-height: 780px;
+            background: #dbe7f1;
+            opacity: 0.6;
+            margin: 5% auto;
+        }
+        .new{
+            width: 90%;
+            margin: 0 auto;
+            padding-top: 5px;
+        }
+        .register{
+            float: right;
+            margin-top: -50px;
+            width: 120px;
+            height: 45px;
+            margin-right: 30px;
+        }
+        h3{
+            padding-left: 10px;
+        }
+        span{
+            padding-left: 10px;
+        }
+        a{
+            text-decoration: none;
+            color: #127dff;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- 登陆 -->
+    <div class="register">
+        <a th:href="@{/user/login.do}" style="color: white;">登录进入系统&gt;&gt;</a>
+    </div>
+    <!-- 新闻列表区 -->
+    <div class="news">
+        <!-- 新闻 -->
+        <div class="new">
+            <h3><a th:href="@{#}">新闻标题</a></h3>
+            <span>作者</span>&nbsp;&nbsp;|<span>时间</span>
+            <hr/>
+        </div>
+        <div class="new"  th:each="item : ${list}">
+            <h3><a th:href="'/news/lookNews.do?id='+ ${item.newsId}" th:text="${item.title}"></a></h3>
+            <span th:text="${item.author}"></span>&nbsp;&nbsp;|<span th:text="${item.creatDate}"></span>
+            <hr/>
+        </div>
+    </div>
+</body>
+</html>
